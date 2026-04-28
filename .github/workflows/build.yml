@@ -62,7 +62,7 @@ jobs:
       - name: Build APK
         shell: bash
         run: |
-          buildozer android clean
+          buildozer android update
           buildozer -v android debug
 
       - name: Upload APK
