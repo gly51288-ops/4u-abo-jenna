@@ -36,8 +36,33 @@ jobs:
             cmake libffi-dev libssl-dev \
             libltdl-dev automake autopoint gettext
 
-      - name: Build APK
+      - name: Accept Android SDK licenses
+        shell: bash
         run: |
+          set -e
+          SDKMANAGER=""
+          for p in \
+            "$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager" \
+            "$HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager" \
+            "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+            "$ANDROID_SDK_ROOT/tools/bin/sdkmanager"
+          do
+            if [ -x "$p" ]; then
+              SDKMANAGER="$p"
+              break
+            fi
+          done
+
+          if [ -n "$SDKMANAGER" ]; then
+            yes | "$SDKMANAGER" --licenses || true
+          else
+            echo "sdkmanager not found yet; Buildozer will provision Android SDK during the build."
+          fi
+
+      - name: Build APK
+        shell: bash
+        run: |
+          buildozer android clean
           buildozer -v android debug
 
       - name: Upload APK
