@@ -1,0 +1,22 @@
+name: Build APK
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Python
+      uses: actions/setup-python@v4
+
+    - name: Install Buildozer
+      run: |
+        pip install buildozer
+
+    - name: Build APK
+      run: |
+        buildozer init
+        buildozer android debug
